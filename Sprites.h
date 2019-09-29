@@ -60,8 +60,9 @@ public:
 		}
 	}
 
-	void render(int x, int y, SDL_Rect* clip = NULL)
+	void render(int x, int y, SDL_Rect* clip = NULL)//, SDL_Rect port = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT })
 	{
+		//SDL_RenderSetViewport(renderer, &port);
 		SDL_Rect renderQuad = { x, y, w, h };
 
 		if (clip != NULL)
@@ -73,7 +74,7 @@ public:
 		SDL_RenderCopy(renderer, mTexture, clip, &renderQuad);
 	}
 
-	void renderScaled(int x, int y, float scalar = 1, SDL_Rect * clip = NULL)
+	void renderScaled(int x, int y, float scalar = 1, SDL_Rect* clip = NULL)
 	{
 		SDL_Rect renderQuad = { x, y, w * scalar, h * scalar };
 
@@ -112,6 +113,11 @@ public:
 	void play(int repetitions)
 	{
 		Mix_PlayChannel(-1, audio, repetitions);
+	}
+
+	void stop()
+	{
+		Mix_HaltChannel(-1);
 	}
 
 	void free()
