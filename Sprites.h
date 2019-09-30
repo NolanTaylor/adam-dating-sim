@@ -1,7 +1,7 @@
 #pragma once
 
 const int SCREEN_WIDTH = 900;
-const int SCREEN_HEIGHT = 650;
+const int SCREEN_HEIGHT = 700;
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -60,21 +60,7 @@ public:
 		}
 	}
 
-	void render(int x, int y, SDL_Rect* clip = NULL)//, SDL_Rect port = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT })
-	{
-		//SDL_RenderSetViewport(renderer, &port);
-		SDL_Rect renderQuad = { x, y, w, h };
-
-		if (clip != NULL)
-		{
-			renderQuad.w = clip->w;
-			renderQuad.h = clip->h;
-		}
-
-		SDL_RenderCopy(renderer, mTexture, clip, &renderQuad);
-	}
-
-	void renderScaled(int x, int y, float scalar = 1, SDL_Rect* clip = NULL)
+	void render(int x, int y, SDL_Rect* clip = NULL, float scalar = 1)
 	{
 		SDL_Rect renderQuad = { x, y, w * scalar, h * scalar };
 
@@ -85,6 +71,20 @@ public:
 		}
 
 		SDL_RenderCopy(renderer, mTexture, clip, &renderQuad);
+	}
+
+	void renderEx(int x, int y, SDL_Rect* clip = NULL, float scalar = 1, double angle = NULL,
+		SDL_Point * center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE)
+	{
+		SDL_Rect renderQuad = { x, y, w * scalar, h * scalar };
+
+		if (clip != NULL)
+		{
+			renderQuad.w = clip->w * scalar;
+			renderQuad.h = clip->h * scalar;
+		}
+
+		SDL_RenderCopyEx(renderer, mTexture, clip, &renderQuad, angle, center, flip);
 	}
 
 	int getWidth() { return w; }

@@ -11,6 +11,7 @@ void typewrite(int x_center, int y, std::string text, bool type_writer_effect, f
 int threadFunction(void* data);
 
 bool quit = false, datingHUD_cont = false;
+int radarAngle = 0;
 
 SDL_sem* dataLock = false; // semaphore
 
@@ -25,29 +26,49 @@ int main(int argc, char* args[])
 	dataLock = SDL_CreateSemaphore(1);
 
 	Sprite Adam; Adam.loadFromFile("Sprites/Adam.png");
+	Sprite bookAdam; bookAdam.loadFromFile("Sprites/bookAdam.png");
+	Sprite eyes; eyes.loadFromFile("Sprites/eyes.png");
 	Sprite dialogue; dialogue.loadFromFile("Sprites/dialogue.png");
 	Sprite bubble; bubble.loadFromFile("Sprites/SpeechBubble.png");
 	Sprite heart; heart.loadFromFile("Sprites/Heart.png");
 	Sprite egg; egg.loadFromFile("Sprites/egg.png");
 	Sprite graphFrame; graphFrame.loadFromFile("Sprites/graphFrame.png");
 	Sprite graph; graph.loadFromFile("Sprites/graph.png");
+	Sprite radarFrame; radarFrame.loadFromFile("Sprites/radarFrame.png");
+	Sprite radar; radar.loadFromFile("Sprites/radar.png");
 
 	Sound DatingStart; DatingStart.loadFromFile("Audio/DatingStart.wav");
 	Sound DatingTense; DatingTense.loadFromFile("Audio/DatingTense.wav");
 	Sound DatingFight; DatingFight.loadFromFile("Audio/DatingFight.wav");
 
-	const int xpos = 150, ypos1 = 650 - 126 + 20,
-			  ypos2 = 650 - 126 + 80;
+	SDL_Rect eyeClip[16];
 
-	bool button1 = true, button2 = true, speaking = false,
-		 speech = true, select_c = false, datingHUD = false;
-	int act = 52, select = 0, count = 0,
-		choice_x = SCREEN_WIDTH / 2,
-		speechBubblex = 660,
-		speechBubble1 = 20,
-		speechBubble2 = 60,
-		speechBubble3 = 100,
-		speechBubble4 = 140,
+	enum eyeEnum
+	{
+		normal, left, right, farRight,
+		suprise, twinkle, happy,
+	};
+
+	for (int i = 0; i < 16; i++)
+	{
+		eyeClip[i].x = (i % 4) * 86;
+		eyeClip[i].y = (i / 4) * 51;
+		eyeClip[i].w = 85;
+		eyeClip[i].h = 50;
+	}
+
+	const int xpos = 200, ypos1 = 700 - 126 + 20,
+			  ypos2 = 700 - 126 + 80,
+			  speechBubblex = 660,
+			  speechBubble1 = 60,
+			  speechBubble2 = 100,
+			  speechBubble3 = 140,
+			  speechBubble4 = 180;
+
+	bool button1 = true, button2 = true, speaking = false, book = false, shake = false,
+		 speech = true, select_c = false, datingHUD = false, grabBook = false;
+	int act = 0, select = 0, count = 0,
+		choice_x = SCREEN_WIDTH / 2, eyePos = eyeEnum::normal,
 		heart_x = xpos, heart_y = ypos1,
 		choice_y1 = SCREEN_HEIGHT - dialogue.getHeight() + 20,
 		choice_y2 = SCREEN_HEIGHT - dialogue.getHeight() + 80;
@@ -60,17 +81,13 @@ int main(int argc, char* args[])
 
 	SDL_Event event;
 
-	int frame = 0;
-
 	while (!quit)
 	{
-		while (SDL_PollEvent(&event) != 0)
+		while (SDL_PollEvent(&event))
 		{
 			if (event.type == SDL_QUIT)
 			{
-				SDL_SemWait(dataLock);
 				quit = true;
-				SDL_SemPost(dataLock);
 			}
 			else if (event.type == SDL_KEYDOWN)
 			{
@@ -99,7 +116,7 @@ int main(int argc, char* args[])
 						select = 2;
 						break;
 					}
-					break;
+					heart_y = ypos1; break;
 				}
 			}
 		}
@@ -119,25 +136,80 @@ int main(int argc, char* args[])
 
 		/*----------------------------------------*/
 
-		Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, 0, NULL);
-		dialogue.render((SCREEN_WIDTH - dialogue.getWidth()) / 2, SCREEN_HEIGHT - dialogue.getHeight() - 1, NULL);
 		if (datingHUD)
 		{
 			SDL_Thread* threadID = SDL_CreateThread(threadFunction, "graphThingie", (void*)quit);
+			for (int i = 0; i <= 190; i++)
+			{
+				SDL_RenderClear(renderer);
+				bookAdam.render((SCREEN_WIDTH - bookAdam.getWidth()) / 2, SCREEN_HEIGHT - bookAdam.getHeight() - dialogue.getHeight());
+				dialogue.render((SCREEN_WIDTH - dialogue.getWidth()) / 2, SCREEN_HEIGHT - dialogue.getHeight() - 1, NULL);
+				if (i <= 50) { typewrite(i, 420, "EGG", false); }
+				else { typewrite(50, 420, "EGG", false); }
+				if (i <= 45) { egg.render(i, 435); }
+				else { egg.render(45, 435); }
+				if (i <= 150) { graphFrame.render(i, 30); graph.render(i, 30, &graphRect); }
+				else { graphFrame.render(150, 30); graph.render(150, 30, &graphRect); }
+				if (i <= 190) { radarFrame.render(900 - i, 380); radar.render(900 - i, 380); }
+				else{ radarFrame.render(710, 380); radar.render(710, 380); }
+				SDL_RenderPresent(renderer); SDL_Delay(1);
+			}
 			datingHUD = false;
 			datingHUD_cont = true;
 		}
 		else if (datingHUD_cont)
 		{
-			typewrite(60, 440, "egg", false);
-			egg.render(50, 450, NULL);
-			graph.render(70, 50, &graphRect);
-			graphFrame.render(70, 50, NULL);
+			typewrite(50, 420, "EGG", false);
+			egg.render(45, 435);
+
+			graph.render(150, 30, &graphRect);
+			graphFrame.render(150, 30, NULL);
 			if (graphRect.x >= 360) { graphRect.x = 0; }
 			graphRect.x++;
+
+			radar.renderEx(710, 380, NULL, 1, radarAngle);
+			radarFrame.render(710, 380);
+			if (radarAngle > 360) { radarAngle = 0; }
+			radarAngle++;
 		}
+
+		if (shake)
+		{
+			for (int i = 1; i < 40; i *= -2)
+			{
+				SDL_RenderClear(renderer);
+				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + i, SCREEN_HEIGHT - Adam.getHeight() - dialogue.getHeight());
+				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275 + i, 185, &eyeClip[eyePos]);
+				SDL_RenderPresent(renderer); SDL_Delay(100);
+			}
+			Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogue.getHeight());
+			eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
+			SDL_RenderPresent(renderer);
+			SDL_RenderClear(renderer);
+			shake = false;
+		}
+
+		if (grabBook)
+		{
+			for (int i = 0; i <= 360; i++)
+			{
+				SDL_RenderClear(renderer);
+				Adam.renderEx((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogue.getHeight(),
+								NULL, 1, i, NULL);
+				dialogue.render((SCREEN_WIDTH - dialogue.getWidth()) / 2, SCREEN_HEIGHT - dialogue.getHeight() - 1);
+				SDL_RenderPresent(renderer); SDL_Delay(1);
+			}
+			grabBook = false; book = true;
+		}
+
+		if (book)
+			bookAdam.render((SCREEN_WIDTH - bookAdam.getWidth()) / 2, SCREEN_HEIGHT - bookAdam.getHeight() - dialogue.getHeight());
+		else
+			Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogue.getHeight());
+		eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
+		dialogue.render((SCREEN_WIDTH - dialogue.getWidth()) / 2, SCREEN_HEIGHT - dialogue.getHeight() - 1, NULL);
 		if (speaking)
-			bubble.render(500, 10, NULL);
+			bubble.render(500, 50, NULL);
 
 		switch (act)
 		{
@@ -208,7 +280,7 @@ int main(int argc, char* args[])
 			typewrite(speechBubblex, speechBubble3, "several letters", speech, 2);
 			typewrite(speechBubblex, speechBubble4, "from my name", speech, 2);
 			speech = false;
-			if (select) { speech = true; select = 0; act++; }
+			if (select) { grabBook = true; speech = true; select = 0; act++; }
 			break;
 		case 12:
 			typewrite(speechBubblex, speechBubble1, "I snagged an", speech, 2);
@@ -236,19 +308,10 @@ int main(int argc, char* args[])
 			typewrite(speechBubblex, speechBubble3, "your keyboard", speech, 2);
 			typewrite(speechBubblex, speechBubble4, "for dating hud", speech, 2);
 			speech = false;
-			if (select_c)
-			{
-				speech = true;
-				SDL_SemWait(dataLock);
-				datingHUD = true;
-				SDL_SemPost(dataLock);
-				select_c = false;
-				act++;
-			}
+			if (select_c) { speech = true; datingHUD = true; select_c = false; select = 0; act++; }
 			break;
 		case 16:
 			typewrite(speechBubblex, speechBubble1, "Wowie", speech, 2);
-			if (speech) { SDL_Delay(250); }
 			typewrite(speechBubblex, speechBubble2, "I feel so", speech, 2);
 			typewrite(speechBubblex, speechBubble3, "informed", speech, 2);
 			speech = false;
@@ -265,7 +328,7 @@ int main(int argc, char* args[])
 			typewrite(speechBubblex, speechBubble1, "Step 2 ask", speech, 2);
 			typewrite(speechBubblex, speechBubble2, "them on a date", speech, 2);
 			speech = false;
-			if (select) { speech = true; select = 0; act++; }
+			if (select) { book = false; speech = true; select = 0; act++; }
 			break;
 		case 19:
 			typewrite(speechBubblex, speechBubble1, "Ahem", speech, 2);
@@ -288,14 +351,14 @@ int main(int argc, char* args[])
 			typewrite(choice_x, choice_y1, "yes", false, 2);
 			typewrite(choice_x, choice_y2, "no", false, 2);
 			heart.render(heart_x, heart_y, NULL);
-			if (select == 1) { act = 123; }
+			if (select == 1) { eyePos = eyeEnum::twinkle; act = 123; }
 			else if (select == 2) { act = 223; }
 			speech = true; select = 0; break;
 		case 123: // yes choice branch
 			typewrite(speechBubblex, speechBubble1, "R Really", speech, 2);
 			typewrite(speechBubblex, speechBubble2, "Wowie", speech, 2);
 			speech = false;
-			if (select) { speech = true; select = 0; act = 24; }
+			if (select) { eyePos = eyeEnum::normal; speech = true; select = 0; act = 24; }
 			break;
 		case 223: // no choice branch
 			typewrite(speechBubblex, speechBubble1, "Fortunately it", speech, 2);
@@ -309,7 +372,7 @@ int main(int argc, char* args[])
 			typewrite(speechBubblex, speechBubble2, "means its time", speech, 2);
 			typewrite(speechBubblex, speechBubble3, "for part three", speech, 2);
 			speech = false;
-			if (select) { speech = true; select = 0; act++; }
+			if (select) { book = true; speech = true; select = 0; act++; }
 			break;
 		case 25:
 			typewrite(speechBubblex, speechBubble1, "Step three", speech, 2);
@@ -322,7 +385,7 @@ int main(int argc, char* args[])
 		case 26:
 			typewrite(speechBubblex, speechBubble1, "dot dot dot", speech, 2); //...
 			speech = false;
-			if (select) { speech = true; select = 0; act++; }
+			if (select) { book = false; speech = true; select = 0; act++; }
 			break;
 		case 27:
 			DatingStart.stop(); //music fade out
@@ -372,8 +435,8 @@ int main(int argc, char* args[])
 			typewrite(choice_x, choice_y1, "yes", false, 2);
 			typewrite(choice_x, choice_y2, "no", false, 2);
 			heart.render(heart_x, heart_y, NULL);
-			if (select == 1) { act = 134; DatingTense.stop(); }
-			else if (select == 2) { act = 234; DatingTense.stop(); }
+			if (select == 1) { act = 134; DatingTense.stop(); eyePos = eyeEnum::suprise; shake = true; } // also play shake sfx
+			else if (select == 2) { act = 234; DatingTense.stop(); eyePos = eyeEnum::suprise; shake = true; }
 			speech = true; select = 0; break;
 		case 134: // yes choice branch
 			typewrite(speechBubblex, speechBubble1, "No!!!", speech, 2);
@@ -394,31 +457,31 @@ int main(int argc, char* args[])
 			if (select) { speech = true; select = 0; act = 37; }
 			break;
 		case 234: // no choice branch Music stop datingHUD away Shake
-			DatingTense.stop();
+			eyePos = eyeEnum::normal;
 			typewrite(speechBubblex, speechBubble1, "Despite that you", speech, 2);
 			typewrite(speechBubblex, speechBubble2, "chose to wear", speech, 2);
 			typewrite(speechBubblex, speechBubble3, "clothing today", speech, 2);
 			typewrite(speechBubblex, speechBubble4, "of all days", speech, 2);
 			speech = false;
-			if (select) { speech = true; select = 0; act++; }
+			if (select) { eyePos = eyeEnum::happy; speech = true; select = 0; act++; }
 			break;
 		case 235:
-			typewrite(speechBubblex, speechBubble1, "was your interest", speech, 2);
-			typewrite(speechBubblex, speechBubble2, "in me", speech, 2);
+			typewrite(speechBubblex, speechBubble1, "was your", speech, 2);
+			typewrite(speechBubblex, speechBubble2, "iterest in me", speech, 2);
 			speech = false;
-			if (select) { speech = true; select = 0; act++; }
+			if (select) { eyePos = eyeEnum::twinkle; speech = true; select = 0; act++; }
 			break;
 		case 236:
 			typewrite(speechBubblex, speechBubble1, "Predestined", speech, 2);
 			speech = false;
-			if (select) { speech = true; select = 0; act = 37; }
+			if (select) { eyePos = eyeEnum::suprise; speech = true; select = 0; act = 37; }
 			break;
 		case 37:
 			typewrite(speechBubblex, speechBubble1, "N-NOOOO!!!!", speech, 2);
 			typewrite(speechBubblex, speechBubble2, "Your dating", speech, 2);
 			typewrite(speechBubblex, speechBubble3, "power!!!", speech, 2);
 			speech = false;
-			if (select) { speech = true; select = 0; act++; }
+			if (select) { eyePos = eyeEnum::normal; shake = true; speech = true; select = 0; act++; }
 			break;
 		case 38:
 			act++;
@@ -507,10 +570,9 @@ int main(int argc, char* args[])
 			heart.render(heart_x, heart_y, NULL);
 			if (select == 1) { act = 153; }
 			else if (select == 2) { act = 253; }
-			speech = true; select = 0;
+			speech = true; select = 0; speaking = true;
 			break;
 		case 153: // i love it choice branch
-			speaking = true;
 			typewrite(speechBubblex, speechBubble1, "NO!!!", speech, 2);
 			speech = false;
 			if (select) { speech = true; select = 0; act++; }
@@ -527,8 +589,8 @@ int main(int argc, char* args[])
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 254:
-			typewrite(speechBubblex, speechBubble1, "your honesty", speech, 2);
-			typewrite(speechBubblex, speechBubble2, "it shows how much", speech, 2);
+			typewrite(speechBubblex, speechBubble1, "your honesty it", speech, 2);
+			typewrite(speechBubblex, speechBubble2, "shows how much", speech, 2);
 			typewrite(speechBubblex, speechBubble3, "you really care", speech, 2);
 			speech = false;
 			if (select) { speech = true; select = 0; act = 55; }
@@ -569,8 +631,6 @@ int threadFunction(void* data)
 	Sprite graphFrame; graphFrame.loadFromFile("Sprites/graphFrame.png");
 	Sprite graph; graph.loadFromFile("Sprites/graph.png");
 
-	SDL_Rect graphRect = { 0, 0, 120, 120 };
-
 	SDL_Event event;
 
 	std::cout << "second thread started";
@@ -606,11 +666,15 @@ void typewrite(int x_center, int y, std::string text, bool type_writer_effect, f
 	Sprite words; words.loadFromFile("Sprites/text.png");
 	Sprite graph; graph.loadFromFile("Sprites/graph.png");
 	Sprite graphFrame; graphFrame.loadFromFile("Sprites/graphFrame.png");
+	Sprite radar; radar.loadFromFile("Sprites/radar.png");
+	Sprite radarFrame; radarFrame.loadFromFile("Sprites/radarFrame.png");
 
 	Sound textSound; textSound.loadFromFile("Audio/textSound.wav");
 
-	SDL_Rect graphBack = { 70, 50, 120, 120 };
+	SDL_Rect graphBack[2] = { {150, 30, 120, 120 }, {710, 380, 120, 120} };
 	SDL_Rect character[63];
+
+	SDL_Event event;
 
 	Uint32 startTime = 0;
 	Uint32 endTime = 0;
@@ -640,7 +704,7 @@ void typewrite(int x_center, int y, std::string text, bool type_writer_effect, f
 		if (size == 1) // oh dear god end me now
 			words.render((x_center - (text.size() * 8) / 2) + i * 8, y, &character[letter]);
 		else
-			words.renderScaled((x_center - (text.size() * 8 * size) / 2) + i * 8 * size, y, size, &character[letter]);
+			words.render((x_center - (text.size() * 8 * size) / 2) + i * 8 * size, y, &character[letter], size);
 
 		if (type_writer_effect && !datingHUD_cont)
 		{
@@ -661,11 +725,17 @@ void typewrite(int x_center, int y, std::string text, bool type_writer_effect, f
 				if (delta > timePerFrame)
 					fps = 1000 / delta;
 
-				SDL_RenderFillRect(renderer, &graphBack);
-				graph.render(70, 50, &graphRect);
-				graphFrame.render(70, 50, NULL);
+				SDL_RenderFillRect(renderer, &graphBack[0]);
+				SDL_RenderFillRect(renderer, &graphBack[1]);
+				graph.render(150, 30, &graphRect);
+				graphFrame.render(150, 30, NULL);
 				if (graphRect.x >= 360) { graphRect.x = 0; }
 				if (i % 2) { graphRect.x++; }
+
+				radar.renderEx(710, 380, NULL, 1, radarAngle);
+				radarFrame.render(710, 380);
+				if (radarAngle > 360) { radarAngle = 0; }
+				if (i % 2) { radarAngle++; }
 				SDL_RenderPresent(renderer);
 
 				startTime = endTime;
@@ -673,4 +743,12 @@ void typewrite(int x_center, int y, std::string text, bool type_writer_effect, f
 			}
 		}
 	}
+	if (type_writer_effect)
+		while (SDL_PollEvent(&event))
+		{
+			if (event.type == SDL_QUIT)
+			{
+				quit = true;
+			}
+		}
 }
