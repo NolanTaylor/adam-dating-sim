@@ -9,7 +9,7 @@ SDL_Renderer* renderer = NULL;
 class Sprite
 {
 public:
-	Sprite() { mTexture = NULL; w = 0; h = 0; }
+	Sprite(std::string path) { mTexture = NULL; w = 0; h = 0; loadFromFile(path); }
 
 	~Sprite() { free(); }
 
@@ -94,6 +94,155 @@ public:
 
 	int w, h;
 	bool beta = 1, underneath = false, underneath_again = false;
+};
+
+class Text
+{
+public:
+	Text() // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!
+	{
+		spriteFree();
+
+		SDL_Texture* newTexture = NULL;
+		SDL_Surface* loadedSurface = IMG_Load("Sprites/text.png");
+
+		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
+
+		newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+
+		w = loadedSurface->w;
+		h = loadedSurface->h;
+
+		SDL_FreeSurface(loadedSurface);
+
+		mTexture = newTexture;
+
+		for (int i = 0; i < 63; i++)
+		{
+			character[i].x = ((i % 9) * 11);
+			character[i].y = ((i / 9) * 14);
+			character[i].w = 10;
+			character[i].h = 13;
+		}
+	}
+
+	~Text() { spriteFree(); audioFree(); }
+
+	bool type(SDL_Rect renderArea, bool typing_effect = false, float size = 1)
+	{
+		int j = 0;
+		if (typing_effect)
+		{
+			if (!pos) // reeeeeeee - is playing previous text == std::string NOT GOOD pls fix
+				play(text.size() - 1);
+
+			for (int i = 0; i < pos / 8; i++)
+			{
+				render(renderArea.x + (j * 8 * size), renderArea.y, &character[getLetter(text[i])], size);
+				if (text[i] == '/')
+				{
+					renderArea.y += 30;
+					j = -1;
+				} j++;
+			}
+
+			pos++;
+
+			if (pos > text.size() * 8)
+			{
+				pos = 0;
+				text = "";
+				return true;
+			}
+			else
+				return false;
+		}
+		else
+		{
+			for (int i = 0; i < text.size(); i++)
+			{
+				render(renderArea.x + (j * 8 * size), renderArea.y, &character[getLetter(text[i])], size);
+				if (text[i] == '/')
+				{
+					renderArea.y += 30;
+					j = -1;
+				} j++;
+			}
+			return true;
+		}
+	}
+
+	void setString(std::string string)
+	{
+		text = string;
+	}
+
+	bool getTyping()
+	{
+		if (text.empty()) { return false; }
+		else { return true; }
+	}
+
+private:
+	void render(int x, int y, SDL_Rect* clip = NULL, float scalar = 1)
+	{
+		SDL_Rect renderQuad = { x, y, w * scalar, h * scalar };
+
+		if (clip != NULL)
+		{
+			renderQuad.w = clip->w * scalar;
+			renderQuad.h = clip->h * scalar;
+		}
+
+		SDL_RenderCopy(renderer, mTexture, clip, &renderQuad);
+	}
+
+	int getLetter(int index)
+	{
+		int letter = static_cast<int>(index); // -er mage
+
+		if (letter >= 32 && letter < 65)
+			letter += 20;
+		else if (letter >= 65 && letter <= 90)
+			letter -= 65;
+		else if (letter >= 97)
+			letter -= 71;
+
+		return letter;
+	}
+
+	void play(int repetitions)
+	{
+		Mix_PlayChannel(-1, audio, repetitions);
+	}
+	
+	void stop()
+	{
+		Mix_HaltChannel(-1);
+	}
+
+	void spriteFree()
+	{
+		if (mTexture != NULL)
+		{
+			SDL_DestroyTexture(mTexture);
+			mTexture = NULL;
+			w = 0;
+			h = 0;
+		}
+	}
+
+	void audioFree()
+	{
+		Mix_FreeChunk(audio);
+	}
+
+	SDL_Texture* mTexture;
+	SDL_Rect character[63];
+	Mix_Chunk* audio = Mix_LoadWAV("Audio/textSound.wav");
+
+	int w, h, pos = 0;
+	std::string text;
 };
 
 class Sound
