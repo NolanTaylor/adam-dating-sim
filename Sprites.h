@@ -133,9 +133,8 @@ public:
 		int j = 0;
 		if (typing_effect)
 		{
-			if (!pos) // reeeeeeee - is playing previous text == std::string NOT GOOD pls fix
-				play(text.size() - 1);
-
+			if (pos == 1)
+				play(text.size());
 			for (int i = 0; i < pos / 8; i++)
 			{
 				render(renderArea.x + (j * 8 * size), renderArea.y, &character[getLetter(text[i])], size);
@@ -152,6 +151,7 @@ public:
 			{
 				pos = 0;
 				text = "";
+				stop();
 				return true;
 			}
 			else
@@ -213,12 +213,12 @@ private:
 
 	void play(int repetitions)
 	{
-		Mix_PlayChannel(-1, audio, repetitions);
+		Mix_PlayChannel(5, audio, repetitions);
 	}
 	
 	void stop()
 	{
-		Mix_HaltChannel(-1);
+		Mix_HaltChannel(5);
 	}
 
 	void spriteFree()

@@ -26,6 +26,7 @@ int main(int argc, char* args[])
 
 	Sprite Adam("Sprites/Adam.png");
 	Sprite bookAdam("Sprites/bookAdam.png");
+	Sprite coolAdam("Sprites/coolAdam.png");
 	Sprite eyes("Sprites/eyes.png");
 	Sprite dialogueBox("Sprites/dialogue.png");
 	Sprite bubble("Sprites/SpeechBubble.png");
@@ -78,8 +79,8 @@ int main(int argc, char* args[])
 			  speechBubble4 = 180;
 
 	bool button1 = true, button2 = true, speaking = false, book = false,
-		 speech = true, select_c = false, datingHUD = false;
-	int act = 0, select = 0, count = 0,
+		 speech = true, select_c = false, datingHUD = false, coolDude = false;
+	int act = 51, select = 0, count = 0,
 		choice_x = SCREEN_WIDTH / 2, eyePos = eyeEnum::normal,
 		heart_x = xpos, heart_y = ypos1,
 		choice_y1 = SCREEN_HEIGHT - dialogueBox.getHeight() + 20, // fix dialogue positions
@@ -173,6 +174,8 @@ int main(int argc, char* args[])
 
 		if (book)
 			bookAdam.render((SCREEN_WIDTH - bookAdam.getWidth()) / 2, SCREEN_HEIGHT - bookAdam.getHeight() - dialogueBox.getHeight());
+		else if (coolDude)
+			coolAdam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
 		else
 			Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
 		eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
@@ -188,6 +191,8 @@ int main(int argc, char* args[])
 				dialogue.setString("");
 				speech = false;
 			}
+			else
+				select = 0;
 		}
 
 		if (choice1.getTyping())
@@ -230,7 +235,7 @@ int main(int argc, char* args[])
 			break;
 		case 6:
 			dialogue.setString("Okay!/Dating Start!");
-			if (select) { speech = true; speaking = false; select = 0; act++; }
+			if (select) { dialogue.setString(""); speech = true; speaking = false; select = 0; act++; }
 			break;
 		case 7:
 			choice1.setString("DATING START");
@@ -249,7 +254,7 @@ int main(int argc, char* args[])
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 11:
-			dialogue.setString("You can't spell/prepared without/several letter/from my name");
+			dialogue.setString("You can't spell/prepared without/several letters/from my name");
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 12:
@@ -292,7 +297,7 @@ int main(int argc, char* args[])
 				else { graphFrame.render(150, 30); graph.render(150, 30, &graphRect); }
 				if (i <= 190) { radarFrame.render(900 - i, 380); radar.render(900 - i, 380); }
 				else { radarFrame.render(710, 380); radar.render(710, 380); }
-				SDL_RenderPresent(renderer); SDL_Delay(3);
+				SDL_RenderPresent(renderer); SDL_Delay(6);
 			} act++;
 			break;
 		case 18:
@@ -312,12 +317,12 @@ int main(int argc, char* args[])
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 22:
-			dialogue.setString("Human/I the great Adam");
+			dialogue.setString("Human/I the great/Adam");
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 23:
 			dialogue.setString("Will go on a/date with you");
-			if (select) { speech = true; select = 0; act++; }
+			if (select) { dialogue.setString(""); speech = true; select = 0; act++; }
 			break;
 		case 24:
 			choice1.setString("yes");
@@ -364,7 +369,7 @@ int main(int argc, char* args[])
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 33:
-			dialogue.setString("Earlier today/you were also/weaing clothing");
+			dialogue.setString("Earlier today/you were also/wearing clothing");
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 34:
@@ -373,7 +378,7 @@ int main(int argc, char* args[])
 			break;
 		case 35:
 			dialogue.setString("You've wanted/to date me from/the very/beginning?!?!");
-			if (select) { speech = true; select = 0; act++; }
+			if (select) { dialogue.setString(""); speech = true; select = 0; act++; }
 			break;
 		case 36:
 			choice1.setString("yes");
@@ -402,13 +407,14 @@ int main(int argc, char* args[])
 				SDL_RenderClear(renderer);
 				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + i, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
 				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275 + i, 185, &eyeClip[eyePos]);
-			}
+				SDL_RenderPresent(renderer); SDL_Delay(100);
+			} SDL_Delay(200);
 			switch (select)
 			{
 			case 1:
-				act = 138;
+				act = 138; break;
 			case 2:
-				act = 238;
+				act = 238; break;
 			}
 			select = 0; break;
 		case 138: // yes choice branch
@@ -455,32 +461,32 @@ int main(int argc, char* args[])
 				datePowerBar.render(333, 13, &bar);
 				bar.w += 3;
 				SDL_RenderPresent(renderer); SDL_Delay(100);
-
-				for (int i = 40; abs(i) > 0; i *= -0.5)
-				{
-					SDL_RenderClear(renderer);
-					Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + i, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
-					eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275 + i, 185, &eyeClip[eyePos]);
-					datePowerFrame.render(330, 10, NULL);
-					datePowerBar.render(333, 13, &bar);
-					bar.w += 3;
-					SDL_RenderPresent(renderer); SDL_Delay(100);
-				}
+			}
+			for (int i = 40; abs(i) > 0; i *= -0.5)
+			{
+				SDL_RenderClear(renderer);
+				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + i, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
+				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275 + i, 185, &eyeClip[eyePos]);
+				datePowerFrame.render(330, 10, NULL);
+				datePowerBar.render(333, 13, &bar);
+				bar.w += 3;
+				SDL_RenderPresent(renderer); SDL_Delay(100);
+			}
+			Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
+			eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
+			SDL_RenderPresent(renderer);
+			for (int i = 0; i < 10; i++)
+			{
+				SDL_RenderClear(renderer);
 				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
 				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
-				SDL_RenderPresent(renderer);
-				for (int i = 0; i < 10; i++)
-				{
-					SDL_RenderClear(renderer);
-					Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
-					eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
-					datePowerFrame.render(330, 10, NULL);
-					datePowerBar.render(333, 13, &bar);
-					bar.w += 3;
-					SDL_RenderPresent(renderer); SDL_Delay(100);
-				}
-				SDL_RenderClear(renderer);
+				datePowerFrame.render(330, 10, NULL);
+				datePowerBar.render(333, 13, &bar);
+				bar.w += 3;
+				SDL_RenderPresent(renderer); SDL_Delay(100);
 			}
+			SDL_RenderClear(renderer);
+			act++;
 		case 43:
 			dialogue.setString("Nyeh");
 			if (select) { speech = true; select = 0; act++; }
@@ -526,11 +532,27 @@ int main(int argc, char* args[])
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 54:
-			act++;
+			for (int i = 0; i < 900; i++)
+			{
+				SDL_RenderClear(renderer);
+				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + i, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
+				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275 + i, 185, &eyeClip[eyePos]);
+				SDL_RenderPresent(renderer);
+				SDL_Delay(1);
+			}
+			for (int i = 0; i < 900; i++)
+			{
+				SDL_RenderClear(renderer);
+				coolAdam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 900 - i, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
+				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 1175 - i, 185, &eyeClip[eyePos]);
+				SDL_RenderPresent(renderer);
+				SDL_Delay(1);
+			}
+			coolDude = true; act++;
 			break; // ADAM MOVE OUT!!!
 		case 55:
 			dialogue.setString("Nyeh!/What do you/think of my/secret style");
-			if (select) { speaking = false; speech = true; select = 0; act++; }
+			if (select) { dialogue.setString(""); speaking = false; speech = true; select = 0; act++; }
 			break;
 		case 56:
 			choice1.setString("I love it");
