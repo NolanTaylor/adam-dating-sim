@@ -80,7 +80,7 @@ int main(int argc, char* args[])
 
 	bool button1 = true, button2 = true, speaking = false, book = false,
 		 speech = true, select_c = false, datingHUD = false, coolDude = false;
-	int act = 51, select = 0, count = 0,
+	int act = 0, select = 0, count = 0,
 		choice_x = SCREEN_WIDTH / 2, eyePos = eyeEnum::normal,
 		heart_x = xpos, heart_y = ypos1,
 		choice_y1 = SCREEN_HEIGHT - dialogueBox.getHeight() + 20, // fix dialogue positions
