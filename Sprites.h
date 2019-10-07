@@ -117,7 +117,7 @@ public:
 
 		mTexture = newTexture;
 
-		for (int i = 0; i < 63; i++)
+		for (int i = 0; i < 81; i++)
 		{
 			character[i].x = ((i % 9) * 11);
 			character[i].y = ((i / 9) * 14);
@@ -215,7 +215,7 @@ private:
 	{
 		Mix_PlayChannel(5, audio, repetitions);
 	}
-	
+
 	void stop()
 	{
 		Mix_HaltChannel(5);
@@ -238,7 +238,7 @@ private:
 	}
 
 	SDL_Texture* mTexture;
-	SDL_Rect character[63];
+	SDL_Rect character[81];
 	Mix_Chunk* audio = Mix_LoadWAV("Audio/textSound.wav");
 
 	int w, h, pos = 0;
@@ -259,14 +259,14 @@ public:
 		audio = Mix_LoadWAV(path.c_str());
 	}
 
-	void play(int repetitions)
+	void play(int channel, int repetitions)
 	{
-		Mix_PlayChannel(-1, audio, repetitions);
+		Mix_PlayChannel(channel, audio, repetitions);
 	}
 
-	void stop()
+	void stop(int channel)
 	{
-		Mix_HaltChannel(-1);
+		Mix_HaltChannel(channel);
 	}
 
 	void free()
