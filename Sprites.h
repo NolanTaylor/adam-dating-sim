@@ -117,10 +117,10 @@ public:
 
 		mTexture = newTexture;
 
-		for (int i = 0; i < 81; i++)
+		for (int i = 0; i < 100; i++)
 		{
-			character[i].x = ((i % 9) * 11);
-			character[i].y = ((i / 9) * 14);
+			character[i].x = ((i % 10) * 11);
+			character[i].y = ((i / 10) * 14);
 			character[i].w = 10;
 			character[i].h = 13;
 		}
@@ -238,7 +238,7 @@ private:
 	}
 
 	SDL_Texture* mTexture;
-	SDL_Rect character[81];
+	SDL_Rect character[100];
 	Mix_Chunk* audio = Mix_LoadWAV("Audio/textSound.wav");
 
 	int w, h, pos = 0;

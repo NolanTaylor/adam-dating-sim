@@ -37,10 +37,10 @@ int main(int argc, char* args[])
 	Sprite tensionGraph("Sprites/tensionGraph.png");
 	Sprite datePowerFrame("Sprites/datePowerFrame.png");
 	Sprite datePowerBar("Sprites/datePowerBar.png");
+	Sprite DATE_POWER("Sprites/DATE_POWER.png");
 
 	Text dialogue;
-	Text choice1;
-	Text choice2;
+	Text choice;
 
 	Sound DatingStart; DatingStart.loadFromFile("Audio/DatingStart.wav");
 	Sound DatingTense; DatingTense.loadFromFile("Audio/DatingTense.wav");
@@ -78,11 +78,12 @@ int main(int argc, char* args[])
 
 	const int xpos = 200, ypos1 = 700 - 126 + 20, ypos2 = 700 - 126 + 80;
 
-	bool button1 = true, button2 = true, speaking = false, book = false, datePower = false, datePowerSide = false,
-		speech = true, select_c = false, datingHUD = false, coolDude = false, tension = false;
+	bool button1 = true, button2 = true, speaking = false, book = false, datePower = false,
+		 speech = true, select_c = false, datingHUD = false, coolDude = false, tension = false;
+
 	int act = 0, select = 0, count = 0, radarAngle = 0, found = NULL,
 		choice_x = SCREEN_WIDTH / 2, eyePos = eyeEnum::normal,
-		heart_x = xpos, heart_y = ypos1,
+		heart_x = xpos, heart_y = ypos1, hatPos = 51,
 		choice_y1 = SCREEN_HEIGHT - dialogueBox.getHeight() + 20, // fix dialogue positions
 		choice_y2 = SCREEN_HEIGHT - dialogueBox.getHeight() + 80;
 
@@ -183,19 +184,15 @@ int main(int argc, char* args[])
 
 		if (tension)
 		{
-			tensionGraph.render(70, 100, &tensionRect);
-			tensionFrame.render(70, 100, NULL);
+			tensionGraph.render(70, 20, &tensionRect);
+			tensionFrame.render(70, 20, NULL);
 			if (tensionRect.x >= 381) { tensionRect.x = 0; }
 			tensionRect.x += 2;
 		}
 
 		if (datePower)
 		{
-			datePowerFrame.render(330, 10, NULL);
-			datePowerBar.render(333, 13, &bar);
-		}
-		else if (datePowerSide)
-		{
+			DATE_POWER.render(70, 20);
 			datePowerFrame.render(70, 50, NULL);
 			datePowerBar.render(73, 53, &bar);
 		}
@@ -206,7 +203,7 @@ int main(int argc, char* args[])
 			coolBook.render(80, 111, NULL);
 		else if (coolDude)
 		{
-			coolHat.render(279, 51);
+			coolHat.render(279, hatPos);
 			coolShirt.render(240, 246, NULL);
 		}
 
@@ -216,7 +213,7 @@ int main(int argc, char* args[])
 		if (speaking)
 			bubble.render(500, 50, NULL);
 
-		if (dialogue.getTyping())
+		if (dialogue.getTyping() && !choice.getTyping())
 		{
 			if (dialogue.type(speechBubble, speech, 2))
 			{
@@ -227,22 +224,22 @@ int main(int argc, char* args[])
 				select = 0;
 		}
 
-		if (choice1.getTyping())
+		if (choice.getTyping())
 		{
 			if (act >= 196 && act <= 198)
 			{
-				if (choice1.type(choice1Rect, speech, 2))
+				if (choice.type(choice1Rect, speech, 2))
 				{
-					choice1.setString("");
+					choice.setString("");
 					speech = false;
 				}
 			}
 			else
 			{
-				choice1.type(choice1Rect, false, 2);
-				choice2.type(choice2Rect, false, 2);
-				choice1.setString("");
-				choice2.setString("");
+				choice.type(choice1Rect, false, 2);
+				dialogue.type(choice2Rect, false, 2);
+				choice.setString("");
+				dialogue.setString("");
 			}
 		}
 
@@ -258,8 +255,8 @@ int main(int argc, char* args[])
 		switch (act)
 		{
 		case 0:
-			choice1.setString("wasd to move");
-			choice2.setString("space to select advance");
+			choice.setString("wasd to move");
+			dialogue.setString("space to select advance");
 			heart.render(heart_x, heart_y, NULL);
 			if (select) { act++; select = 0; speaking = true; }
 			break;
@@ -276,8 +273,8 @@ int main(int argc, char* args[])
 			if (select) { dialogue.setString(""); speech = true; select = 0; act++; }
 			break;
 		case 4:
-			choice1.setString("yes");
-			choice2.setString("no");
+			choice.setString("yes");
+			dialogue.setString("no");
 			heart.render(heart_x, heart_y, NULL);
 			if (select) { select = 0; act++; heart_y = ypos1; }
 			break;
@@ -290,8 +287,8 @@ int main(int argc, char* args[])
 			if (select) { dialogue.setString(""); speech = true; speaking = false; select = 0; act++; }
 			break;
 		case 7: // DATING START!!! (fix);
-			choice1.setString("DATING START");
-			if (select) { speaking = true; select = 0; DatingStart.play(1, 1); act++; }
+			choice.setString("DATING START");
+			if (select) { speaking = true; select = 0; DatingStart.play(1, 5); act++; }
 			break;
 		case 8:
 			dialogue.setString("Here we are/on our date!");
@@ -378,8 +375,8 @@ int main(int argc, char* args[])
 			if (select) { dialogue.setString(""); speech = true; select = 0; act++; }
 			break;
 		case 24:
-			choice1.setString("yes");
-			choice2.setString("no");
+			choice.setString("yes");
+			dialogue.setString("no");
 			heart.render(heart_x, heart_y, NULL);
 			if (select == 1) { eyePos = eyeEnum::twinkle; act = 125; }
 			else if (select == 2) { act = 225; heart_y = ypos1; }
@@ -407,7 +404,7 @@ int main(int argc, char* args[])
 		case 29:
 			DatingStart.stop(1);
 			dialogue.setString("Wait a second...");
-			if (select) { speech = true; select = 0; DatingTense.play(3, 1); act++; }
+			if (select) { speech = true; select = 0; DatingTense.play(3, 5); act++; }
 			break;
 		case 30:
 			dialogue.setString("'Wear clothing'");
@@ -434,8 +431,8 @@ int main(int argc, char* args[])
 			if (select) { dialogue.setString(""); speech = true; select = 0; act++; }
 			break;
 		case 36:
-			choice1.setString("yes");
-			choice2.setString("no");
+			choice.setString("yes");
+			dialogue.setString("no");
 			heart.render(heart_x, heart_y, NULL);
 			if (select == 1) {
 				act++; DatingTense.stop(3);
@@ -483,7 +480,7 @@ int main(int argc, char* args[])
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 140:
-			dialogue.setString("You're way better/at dating than/I am");
+			dialogue.setString("You're way/better at/dating than I/am");
 			if (select) { speech = true; select = 0; act = 41; }
 			break;
 		case 238: // no choice branch Music stop datingHUD away Shake
@@ -501,7 +498,7 @@ int main(int argc, char* args[])
 			break;
 		case 41:
 			dialogue.setString("N-NOOOO!!!/Your/DATING POWER!!!");
-			if (select) { eyePos = eyeEnum::normal; speech = true; select = 0; act++; }
+			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 42:
 			std::cout << "adam is a big boi shaek";
@@ -514,8 +511,9 @@ int main(int argc, char* args[])
 				SDL_RenderClear(renderer);
 				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + i, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
 				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275 + i, 185, &eyeClip[eyePos]);
-				datePowerFrame.render(330, 10, NULL);
-				datePowerBar.render(333, 13, &bar);
+				DATE_POWER.render(70, 20);
+				datePowerFrame.render(70, 50, NULL);
+				datePowerBar.render(73, 53, &bar);
 				bar.w += 4;
 				SDL_RenderPresent(renderer); SDL_Delay(100);
 			}
@@ -524,8 +522,9 @@ int main(int argc, char* args[])
 				SDL_RenderClear(renderer);
 				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + i, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
 				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275 + i, 185, &eyeClip[eyePos]);
-				datePowerFrame.render(330, 10, NULL);
-				datePowerBar.render(333, 13, &bar);
+				DATE_POWER.render(70, 20);
+				datePowerFrame.render(70, 50, NULL);
+				datePowerBar.render(73, 53, &bar);
 				bar.w += 4;
 				SDL_RenderPresent(renderer); SDL_Delay(100);
 			}
@@ -537,12 +536,14 @@ int main(int argc, char* args[])
 				SDL_RenderClear(renderer);
 				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
 				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
-				datePowerFrame.render(330, 10, NULL);
-				datePowerBar.render(333, 13, &bar);
+				DATE_POWER.render(70, 20);
+				datePowerFrame.render(70, 50, NULL);
+				datePowerBar.render(73, 53, &bar);
 				bar.w += 4;
 				SDL_RenderPresent(renderer); SDL_Delay(100);
 			}
 			SDL_RenderClear(renderer);
+			eyePos = eyeEnum::normal;
 			SDL_Delay(500); act++; break;
 		case 43:
 			dialogue.setString("Nyeh");
@@ -550,7 +551,7 @@ int main(int argc, char* args[])
 			break;
 		case 44:
 			dialogue.setString("Nyeh heh heh");
-			if (select) { speech = true; select = 0; DatingFight.play(4, 1); tension = true; act++; }
+			if (select) { speech = true; select = 0; DatingFight.play(4, 5); tension = true; act++; }
 			break;
 		case 45: // DatingFight tension graph and music
 			dialogue.setString("Don't think/you've bested/me yet!");
@@ -601,7 +602,7 @@ int main(int argc, char* args[])
 			{
 				SDL_RenderClear(renderer);
 				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 900 - i, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
-				coolHat.render(279 + 900 - i, 51);
+				coolHat.render(279 + 900 - i, hatPos);
 				coolShirt.render(240 + 900 - i, 246, NULL);
 				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 1175 - i, 185, &eyeClip[eyePos]);
 				SDL_RenderPresent(renderer);
@@ -614,8 +615,8 @@ int main(int argc, char* args[])
 			if (select) { dialogue.setString(""); speaking = false; speech = true; select = 0; act++; }
 			break;
 		case 56:
-			choice1.setString("I love it");
-			choice2.setString("I hate it");
+			choice.setString("I love it");
+			dialogue.setString("I hate it");
 			heart.render(heart_x, heart_y, NULL);
 			if (select == 1) { act = 157; eyePos = eyeEnum::suprise; }
 			else if (select == 2) { act = 257; heart_y = ypos1; eyePos = eyeEnum::suprise; }
@@ -646,11 +647,12 @@ int main(int argc, char* args[])
 			{
 				SDL_RenderClear(renderer);
 				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + i, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
-				coolHat.render(279 + i, 51, NULL);
+				coolHat.render(279 + i, hatPos, NULL);
 				coolShirt.render(240 + i, 246, NULL);
 				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275 + i, 185, &eyeClip[eyePos]);
-				datePowerFrame.render(330, 10, NULL);
-				datePowerBar.render(333, 13, &bar);
+				DATE_POWER.render(70, 20);
+				datePowerFrame.render(70, 50, NULL);
+				datePowerBar.render(73, 53, &bar);
 				bar.w += 3;
 				SDL_RenderPresent(renderer); SDL_Delay(100);
 			}
@@ -658,16 +660,17 @@ int main(int argc, char* args[])
 			{
 				SDL_RenderClear(renderer);
 				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + i, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
-				coolHat.render(279 + i, 51, NULL);
+				coolHat.render(279 + i, hatPos, NULL);
 				coolShirt.render(240 + i, 246, NULL);
 				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275 + i, 185, &eyeClip[eyePos]);
-				datePowerFrame.render(330, 10, NULL);
-				datePowerBar.render(333, 13, &bar);
+				DATE_POWER.render(70, 20);
+				datePowerFrame.render(70, 50, NULL);
+				datePowerBar.render(73, 53, &bar);
 				bar.w += 5;
 				SDL_RenderPresent(renderer); SDL_Delay(100);
 			}
 			Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
-			coolHat.render(279, 51, NULL);
+			coolHat.render(279, hatPos, NULL);
 			coolShirt.render(240, 246, NULL);
 			eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
 			SDL_RenderPresent(renderer);
@@ -675,11 +678,12 @@ int main(int argc, char* args[])
 			{
 				SDL_RenderClear(renderer);
 				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
-				coolHat.render(279, 51, NULL);
+				coolHat.render(279, hatPos, NULL);
 				coolShirt.render(240, 246, NULL);
 				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
-				datePowerFrame.render(330, 10, NULL);
-				datePowerBar.render(333, 13, &bar);
+				DATE_POWER.render(70, 20);
+				datePowerFrame.render(70, 50, NULL);
+				datePowerBar.render(73, 53, &bar);
 				bar.w += 5;
 				SDL_RenderPresent(renderer); SDL_Delay(100);
 			}
@@ -720,7 +724,7 @@ int main(int argc, char* args[])
 			if (select) { dialogue.setString(""); datePower = false; speech = true; speaking = false; select = 0; act++; }
 			break;
 		case 67:
-			choice1.setString("Move and inspect with space");
+			choice.setString("Move and inspect with space");
 			switch (found)
 			{
 			case clothing::shirt:
@@ -793,7 +797,19 @@ int main(int argc, char* args[])
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 72:
-			//lift hat; reveal present.
+			for (int i = 0; i < 150; i++)
+			{
+				SDL_RenderClear(renderer);
+				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
+				//present.render
+				coolHat.render(279, 51 - i, NULL);
+				coolShirt.render(240, 246, NULL);
+				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
+				SDL_RenderPresent(renderer);
+				SDL_Delay(20);
+			}
+			hatPos = -100;
+			SDL_Delay(1000);
 			act++;
 			break;
 		case 73:
@@ -813,8 +829,8 @@ int main(int argc, char* args[])
 			if (select) { dialogue.setString(""); heart_x = xpos; heart_y = ypos1; speech = true; select = 0; act++; }
 			break;
 		case 77:
-			choice1.setString("Open it");
-			choice2.setString("Don't");
+			choice.setString("Open it");
+			dialogue.setString("Don't");
 			heart.render(heart_x, heart_y, NULL);
 			if (select == 1) { select = 0; act = 82; }
 			else if (select == 2) { select = 0; heart_y = ypos1; act = 278; }
@@ -840,8 +856,8 @@ int main(int argc, char* args[])
 			if (select) { dialogue.setString(""); speech = true; select = 0; act++; }
 			break;
 		case 83:
-			choice1.setString("Of course");
-			choice2.setString("No idea");
+			choice.setString("Of course");
+			dialogue.setString("No idea");
 			heart.render(heart_x, heart_y, NULL);
 			if (select == 1) { select = 0; act = 184; }
 			else if (select == 2) { select = 0; heart_y = ypos1; act = 284; }
@@ -875,16 +891,20 @@ int main(int argc, char* args[])
 			if (select) { speech = true; select = 0; act = 88; }
 			break;
 		case 88:
-			for (int i = 0; i < 100; i += 5)
+			for (int i = 0; i < 70; i += 1)
 			{
 				SDL_RenderClear(renderer);
 				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
-				coolHat.render(279, 51, NULL);
+				coolHat.render(279, hatPos, NULL);
 				coolShirt.render(240, 246, NULL);
+				DATE_POWER.render(i, 20);
 				datePowerFrame.render(i, 50);
 				datePowerBar.render(i + 3, 53, &bar);
+				dialogueBox.render(SCREEN_WIDTH / 2, SCREEN_HEIGHT - dialogueBox.getHeight());
+				SDL_RenderPresent(renderer);
+				SDL_Delay(1);
 			}
-			datePowerSide = true;
+			datePower = true;
 			act++; break;
 		case 89:
 			dialogue.setString("This ain't any/plain ol' pasta!");
@@ -911,26 +931,26 @@ int main(int argc, char* args[])
 			if (select) { dialogue.setString(""); speech = true; select = 0; act++; }
 			break;
 		case 95:
-			choice1.setString("Eat it");
-			choice2.setString("Refuse");
+			choice.setString("Eat it");
+			dialogue.setString("Refuse");
 			heart.render(heart_x, heart_y, NULL);
 			if (select == 1) { select = 0; act = 196; }
 			else if (select == 2) { select = 0; heart_y = ypos1; act = 296; }
 			speech = true; break;
 		case 196:
-			choice1.setString("*You take a small bite");
+			choice.setString("*You take a small bite");
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 197:
-			choice1.setString("*Your face reflexively scrunches up");
+			choice.setString("*Your face reflexively scrunches up");
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		case 198:
-			choice1.setString("*The taste is indescribable...");
+			choice.setString("*The taste is indescribable...");
 			if (select) { eyePos = eyeEnum::happy; speech = true; select = 0; act++; }
 			break;
 		case 199:
-			dialogue.setString("What a passionate/expression!!!");
+			dialogue.setString("What a/passionate/expression!!!");
 			if (select) { eyePos = eyeEnum::twinkle; speech = true; select = 0; act = 1100; }
 			break;
 		case 1100:
@@ -938,15 +958,63 @@ int main(int argc, char* args[])
 			if (select) { eyePos = eyeEnum::happy; speech = true; select = 0; act++; }
 			break;
 		case 1101:
-			dialogue.setString("Any by extension/me!!!");
+			dialogue.setString("And by extension/me!!!");
 			if (select) { eyePos = eyeEnum::suprise; speech = true; select = 0; act++; }
 			break;
 		case 1102:
 			dialogue.setString("Maybe even more/than I do!!");
-			if (select) { speech = true; select = 0; act++; } // set act!
+			if (select) { speech = true; select = 0; act = 103; } // set act!
 			break;
 		case 296:
 			dialogue.setString("You mean...");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 297:
+			dialogue.setString("You're letting/me have it/instead?");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 298:
+			dialogue.setString("Because you/know how much/I love pasta...");
+			if (select) { eyePos = eyeEnum::suprise; speech = true; select = 0; act++; }
+			break;
+		case 299:
+			dialogue.setString("Impossible!!/Taking my/present and/turning it/around on me!");
+			if (select) { speech = true; select = 0; act = 103; }
+			break;
+		case 103: // also shake
+			dialogue.setString("AUGH!!!"); // urrrgh - noooooooo!!! then fade to white as date power bar overflows
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 104:
+			dialogue.setString("Human./It's clear now");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 105:
+			dialogue.setString("You're madly in/love with me");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 106:
+			dialogue.setString("Everything you do/Everything you say");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 107:
+			dialogue.setString("It's all been/for my sake");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 108:
+			dialogue.setString("Human. I want/you to be/happy, too");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 109:
+			dialogue.setString("It's time for/me to express/my feelings");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 110:
+			dialogue.setString("It's time that/I told you");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 111:
+			dialogue.setString("I Adam...");
 			if (select) { speech = true; select = 0; act++; }
 			break;
 		default:
