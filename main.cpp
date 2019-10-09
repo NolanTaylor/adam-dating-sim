@@ -52,6 +52,7 @@ int main(int argc, char* args[])
 	Sound Grab; Grab.loadFromFile("Audio/Grab.wav");
 
 	SDL_Rect eyeClip[16];
+	SDL_Rect screen = { 0, 0, 900, 700 };
 	SDL_Rect graphRect = { 0, 0, 120, 120 };
 	SDL_Rect tensionRect = { 0, 0, 118, 233 };
 	SDL_Rect speechBubble = { 540, 70, 240, 145 };
@@ -63,7 +64,8 @@ int main(int argc, char* args[])
 	enum eyeEnum
 	{
 		normal, left, right, farRight,
-		suprise, twinkle, happy,
+		suprise, twinkle, happy, blush,
+		sheep
 	};
 
 	enum clothing
@@ -196,7 +198,8 @@ int main(int argc, char* args[])
 			tensionRect.x += 2;
 		}
 
-		Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
+		if (act != 149)
+			Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
 
 		// adam overlays
 		if (book)
@@ -219,7 +222,8 @@ int main(int argc, char* args[])
 			datePowerBar.render(73, 53, &bar);
 		}
 
-		eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
+		if (act != 149)
+			eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275, 185, &eyeClip[eyePos]);
 		dialogueBox.render((SCREEN_WIDTH - dialogueBox.getWidth()) / 2, SCREEN_HEIGHT - dialogueBox.getHeight() - 1, NULL);
 
 		if (speaking)
@@ -402,14 +406,14 @@ int main(int argc, char* args[])
 			choice.setString("yes");
 			dialogue.setString("no");
 			heart.render(heart_x, heart_y, NULL);
-			if (select == 1) { eyePos = eyeEnum::twinkle; act = 125; }
-			else if (select == 2) { act = 225; heart_y = ypos1; }
+			if (select == 1) { eyePos = eyeEnum::twinkle; act = 1025; }
+			else if (select == 2) { act = 2025; heart_y = ypos1; }
 			speech = true; select = 0; break;
-		case 125: // yes choice branch
+		case 1025: // yes choice branch
 			dialogue.setString("R-Really?/Wowie!!!");
 			if (select) { eyePos = eyeEnum::normal; speech = true; select = 0; act = 26; }
 			break;
-		case 225: // no choice branch
+		case 2025: // no choice branch
 			dialogue.setString("Fortunately it/only says to ask");
 			if (select) { speech = true; select = 0; act = 26; }
 			break;
@@ -490,33 +494,33 @@ int main(int argc, char* args[])
 			switch (select)
 			{
 			case 1:
-				act = 138; break;
+				act = 1038; break;
 			case 2:
-				act = 238; break;
+				act = 2038; break;
 			}
 			select = 0; break;
-		case 138: // yes choice branch
+		case 1038: // yes choice branch
 			dialogue.setString("NO!!!");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 139:
+		case 1039:
 			dialogue.setString("You planned/it all!!");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 140:
+		case 1040:
 			dialogue.setString("You're way/better at/dating than I/am");
 			if (select) { speech = true; select = 0; act = 41; }
 			break;
-		case 238: // no choice branch Music stop datingHUD away Shake
+		case 2038: // no choice branch Music stop datingHUD away Shake
 			eyePos = eyeEnum::normal;
 			dialogue.setString("Despite that you/chose to wear/clothing today/of all days");
 			if (select) { eyePos = eyeEnum::happy; speech = true; select = 0; act++; }
 			break;
-		case 239:
+		case 2039:
 			dialogue.setString("Was your/interest in/me...");
 			if (select) { eyePos = eyeEnum::twinkle; speech = true; select = 0; act++; }
 			break;
-		case 240:
+		case 2040:
 			dialogue.setString("Predestined!?!?");
 			if (select) { eyePos = eyeEnum::suprise; speech = true; select = 0; act = 41; }
 			break;
@@ -642,23 +646,23 @@ int main(int argc, char* args[])
 			choice.setString("I love it");
 			dialogue.setString("I hate it");
 			heart.render(heart_x, heart_y, NULL);
-			if (select == 1) { act = 157; eyePos = eyeEnum::suprise; }
-			else if (select == 2) { act = 257; heart_y = ypos1; eyePos = eyeEnum::suprise; }
+			if (select == 1) { act = 1057; eyePos = eyeEnum::suprise; }
+			else if (select == 2) { act = 2057; heart_y = ypos1; eyePos = eyeEnum::suprise; }
 			speech = true; select = 0; speaking = true;
 			break;
-		case 157: // i love it choice branch
+		case 1057: // i love it choice branch
 			dialogue.setString("NO!!!!");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 158:
+		case 1058:
 			dialogue.setString("A genuine/compliment!!");
 			if (select) { speech = true; select = 0; act = 59; }
 			break;
-		case 257: // i hate it choice branch
+		case 2057: // i hate it choice branch
 			dialogue.setString("NO!!!!");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 258:
+		case 2058:
 			dialogue.setString("Your honesty!!/It shows how/much you really/care!!!");
 			if (select) { speech = true; select = 0; act = 59; }
 			break;
@@ -752,59 +756,59 @@ int main(int argc, char* args[])
 			switch (found)
 			{
 			case clothing::shirt:
-				speaking = true; speech = true; select = 0; act = 168;
+				speaking = true; speech = true; select = 0; act = 1068;
 				break;
 			case clothing::shoulder:
-				speaking = true; speech = true; select = 0; act = 268;
+				speaking = true; speech = true; select = 0; act = 2068;
 				break;
 			case clothing::hat:
-				speaking = true; speech = true; select = 0; act = 368;
+				speaking = true; speech = true; select = 0; act = 3068;
 				break;
 			case clothing::watch:
-				speaking = true; speech = true; select = 0; act = 468;
+				speaking = true; speech = true; select = 0; act = 4068;
 				break;
 			case clothing::hand:
-				speaking = true; speech = true; select = 0; act = 568;
+				speaking = true; speech = true; select = 0; act = 5068;
 				break;
 			}
 			break;
-		case 168:
+		case 1068:
 			dialogue.setString("This shirt/didn't/originally say/'cool' but I/improved it");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 169:
+		case 1069:
 			dialogue.setString("Expert tip: All/articles of/clothing can be/improved this/way!!");
 			if (select) { dialogue.setString(""); found = NULL; speech = true; speaking = false; select = 0; act = 67; }
 			break;
-		case 268:
+		case 2068:
 			dialogue.setString("I see. I see.");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 269:
+		case 2069:
 			dialogue.setString("You like/caressing my/biceps with a/floating heart");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 270:
+		case 2070:
 			dialogue.setString("But who/doesn't!?");
 			if (select) { dialogue.setString(""); found = NULL; speech = true; speaking = false; select = 0; act = 67; }
 			break;
-		case 368:
+		case 3068:
 			dialogue.setString("My hat...?");
 			if (select) { speech = true; select = 0; act = 69; }
 			break;
-		case 468:
+		case 4068:
 			dialogue.setString("They say watches/hold the secret/to time and/space...");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 469:
+		case 4069:
 			dialogue.setString("But mine just/has pictures/of cats...");
 			if (select) { dialogue.setString(""); found = NULL; speech = true; speaking = false; select = 0; act = 67; }
 			break;
-		case 568:
+		case 5068:
 			dialogue.setString("Holding my hand/so I'll tell you/the answer...");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 569:
+		case 5069:
 			dialogue.setString("No!!/I must resist!");
 			if (select) { dialogue.setString(""); found = NULL; speech = true; speaking = false; select = 0; act = 67; }
 			break;
@@ -857,21 +861,21 @@ int main(int argc, char* args[])
 			dialogue.setString("Don't");
 			heart.render(heart_x, heart_y, NULL);
 			if (select == 1) { open = true; select = 0; act = 82; }
-			else if (select == 2) { select = 0; heart_y = ypos1; act = 278; }
+			else if (select == 2) { select = 0; heart_y = ypos1; act = 2078; }
 			speech = true; break;
-		case 278: //Don't choice branch
+		case 2078: //Don't choice branch
 			dialogue.setString("You can't even/bring yourself/to harm my/delicate/wrapping??");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 279:
+		case 2079:
 			dialogue.setString("N-NO!/That technique!!");
 			if (select) { speech = true; eyePos = eyeEnum::suprise; select = 0; act++; }
 			break;
-		case 280:
+		case 2080:
 			dialogue.setString("It's too strong!");
 			if (select) { speech = true; eyePos = eyeEnum::normal; select = 0; act++; } //scowl eyePos?!??!
 			break;
-		case 281:
+		case 2081:
 			dialogue.setString("Counterattack!/I'll open the/present myself!!");
 			if (select) { open = true; speech = true; select = 0; act = 82; }
 			break;
@@ -883,34 +887,34 @@ int main(int argc, char* args[])
 			choice.setString("Of course");
 			dialogue.setString("No idea");
 			heart.render(heart_x, heart_y, NULL);
-			if (select == 1) { select = 0; act = 184; }
-			else if (select == 2) { select = 0; heart_y = ypos1; act = 284; }
+			if (select == 1) { select = 0; act = 1084; }
+			else if (select == 2) { select = 0; heart_y = ypos1; act = 2084; }
 			speech = true; break;
-		case 184: // Of course choice branch
+		case 1084: // Of course choice branch
 			dialogue.setString("'Spaghetti'");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 185:
+		case 1085:
 			dialogue.setString("That's what/you're thinking/isn't it?");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 186:
+		case 1086:
 			dialogue.setString("Right!");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 187:
+		case 1087:
 			dialogue.setString("But oh so/wrong!!!");
 			if (select) { speech = true; select = 0; act = 88; }
 			break;
-		case 284:
+		case 2084:
 			dialogue.setString("Nyeh heh heh!/That's right!!");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 285:
+		case 2085:
 			dialogue.setString("You have no/idea!!");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 286:
+		case 2086:
 			dialogue.setString("Though this/appears to be/spaghetti...");
 			if (select) { speech = true; select = 0; act = 88; }
 			break;
@@ -959,24 +963,24 @@ int main(int argc, char* args[])
 			choice.setString("Eat it");
 			dialogue.setString("Refuse");
 			heart.render(heart_x, heart_y, NULL);
-			if (select == 1) { select = 0; act = 196; }
-			else if (select == 2) { select = 0; heart_y = ypos1; act = 296; }
+			if (select == 1) { select = 0; act = 1096; }
+			else if (select == 2) { select = 0; heart_y = ypos1; act = 2096; }
 			speech = true; break;
-		case 196:
+		case 1096:
 			choice.setString("*You take a small bite");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 197:
+		case 1097:
 			choice.setString("*Your face reflexively scrunches up");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 198:
+		case 1098:
 			choice.setString("*The taste is indescribable...");
 			if (select) { eyePos = eyeEnum::happy; speech = true; select = 0; act++; }
 			break;
-		case 199:
+		case 1099:
 			dialogue.setString("What a/passionate/expression!!!");
-			if (select) { eyePos = eyeEnum::twinkle; speech = true; select = 0; act = 1100; }
+			if (select) { eyePos = eyeEnum::twinkle; speech = true; select = 0; act++; }
 			break;
 		case 1100:
 			dialogue.setString("You must really/love my cooking!");
@@ -990,19 +994,19 @@ int main(int argc, char* args[])
 			dialogue.setString("Maybe even more/than I do!!");
 			if (select) { speech = true; select = 0; act = 103; } // set act!
 			break;
-		case 296:
+		case 2096:
 			dialogue.setString("You mean...");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 297:
+		case 2097:
 			dialogue.setString("You're letting/me have it/instead?");
 			if (select) { speech = true; select = 0; act++; }
 			break;
-		case 298:
+		case 2098:
 			dialogue.setString("Because you/know how much/I love pasta...");
 			if (select) { eyePos = eyeEnum::suprise; speech = true; select = 0; act++; }
 			break;
-		case 299:
+		case 2099:
 			dialogue.setString("Impossible!!/Taking my/present and/turning it/around on me!");
 			if (select) { speech = true; select = 0; act = 103; }
 			break;
@@ -1158,6 +1162,7 @@ int main(int argc, char* args[])
 			FADE.render(0, 0);
 			SDL_RenderClear(renderer);
 			dialogue.setString("");
+			datePower = false;
 			white = true; speech = true; act++;
 			break;
 		case 104:
@@ -1190,7 +1195,168 @@ int main(int argc, char* args[])
 			break;
 		case 111:
 			finalText.setString("I Adam...");
+			if (select) { finalText.setString(""); white = false; speech = true; select = 0; act++; }
+			break;
+		case 112:
+			dialogue.setString("I...");
 			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 113:
+			dialogue.setString("Um...");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 114:
+			dialogue.setString("Boy, is it hot/in here, or is/it just me??");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 115:
+			dialogue.setString("...");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 116:
+			dialogue.setString("Oh, shoot");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 117:
+			dialogue.setString("Human, I...");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 118:
+			dialogue.setString("I'm sorry");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 119:
+			dialogue.setString("I don't like/you the way/you like me");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 120:
+			dialogue.setString("Romantically/I mean...");
+			if (select) { eyePos = eyeEnum::suprise; speech = true; select = 0; act++; }
+			break;
+		case 121:
+			dialogue.setString("I mean, I tried/very hard to!");
+			if (select) { eyePos = eyeEnum::farRight; speech = true; select = 0; act++; }
+			break;
+		case 122:
+			dialogue.setString("I thought/that because/you flirted/with me...");
+			if (select) { eyePos = eyeEnum::normal; speech = true; select = 0; act++; }
+			break;
+		case 123:
+			dialogue.setString("That I was/supposed to/go on a date/with you!");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 124:
+			dialogue.setString("Then, on the/date, feelings/would blossom/forth!!!");
+			if (select) { eyePos = eyeEnum::blush; speech = true; select = 0; act += 2; }
+			break;
+		case 125:
+			dialogue.setString("I would be/able to match/your passion/for me!");
+			if (select) { eyePos = eyeEnum::sheep; speech = true; select = 0; act++; }
+			break;
+		case 126:
+			dialogue.setString("But alas.../I, the great/Adam...");
+			if (select) { eyePos = eyeEnum::left; speech = true; select = 0; act++; }
+			break;
+		case 127:
+			dialogue.setString("Have failed");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 128:
+			dialogue.setString("I feel just/the same as/before");
+			if (select) { eyePos = eyeEnum::normal; speech = true; select = 0; act++; }
+			break;
+		case 129:
+			dialogue.setString("And instead, by/dating you...");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 130:
+			dialogue.setString("I have only/drawn you/deeper...");
+			if (select) { eyePos = eyeEnum::suprise; speech = true; select = 0; act++; }
+			break;
+		case 131:
+			dialogue.setString("Into your intense/love for me!");
+			if (select) { eyePos = eyeEnum::right; speech = true; select = 0; act++; }
+			break;
+		case 132:
+			dialogue.setString("A dark prison/of passion, with/no escape...");
+			if (select) { eyePos = eyeEnum::normal; speech = true; select = 0; act++; }
+			break;
+		case 133:
+			dialogue.setString("How could I/have done this/to my dear/friend...?");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 134:
+			dialogue.setString("...");
+			if (select) { eyePos = eyeEnum::suprise; speech = true; select = 0; act++; }
+			break;
+		case 135:
+			dialogue.setString("NO! WAIT!/That's wrong!");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 136:
+			dialogue.setString("I can't fail/at anything!!!");
+			if (select) { eyePos = eyeEnum::normal; speech = true; select = 0; act++; }
+			break;
+		case 137:
+			dialogue.setString("Human!!!/I'll help you/through these/trying times!!!");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 138:
+			dialogue.setString("I'll keep being/your cool/friend...");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 139:
+			dialogue.setString("And act like/this all never/happened...");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 140:
+			dialogue.setString("After all, you/are very great!");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 141:
+			dialogue.setString("It would be/tragic to lose/your friendship");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 142:
+			dialogue.setString("So please...");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 143:
+			dialogue.setString("Don't cry/over me");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 144:
+			dialogue.setString("Someday you'll/find someone as/great as me");
+			if (select) { eyePos = eyeEnum::left; speech = true; select = 0; act++; }
+			break;
+		case 145:
+			dialogue.setString("Well, no./That's not true");
+			if (select) { eyePos = eyeEnum::normal; speech = true; select = 0; act++; }
+			break;
+		case 146:
+			dialogue.setString("But I'll help/you settle for/second best!!!");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 147:
+			dialogue.setString("Nyeh heh heh/heh heh!!!");
+			if (select) { speech = true; select = 0; act++; }
+			break;
+		case 148:
+			for (int i = 0; i < 900; i++)
+			{
+				SDL_RenderClear(renderer);
+				Adam.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + i, SCREEN_HEIGHT - Adam.getHeight() - dialogueBox.getHeight());
+				spaghett.render(330 + i, 40);
+				coolHat.render(279 + i, hatPos, NULL);
+				coolShirt.render(240 + i, 246, NULL);
+				eyes.render((SCREEN_WIDTH - Adam.getWidth()) / 2 + 275 + i, 185, &eyeClip[eyePos]);
+				dialogueBox.render((SCREEN_WIDTH - dialogueBox.getWidth()) / 2, SCREEN_HEIGHT - dialogueBox.getHeight() - 1, NULL);
+				SDL_RenderPresent(renderer); SDL_Delay(1);
+			}
+			dialogue.setString("");
+			act++;
+			break;
+		case 149:
 			break;
 		default:
 			break;

@@ -21,12 +21,12 @@ C:\C++\Adam\Sprites.h(178,47): warning C4838:  conversion from 'float' to 'int' 
 C:\C++\Adam\Sprites.h(178,47): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
 C:\C++\Adam\Sprites.h(182,27): warning C4244:  '=': conversion from 'float' to 'int', possible loss of data
 C:\C++\Adam\Sprites.h(183,27): warning C4244:  '=': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(166,13): warning C4018:  '<': signed/unsigned mismatch
-C:\C++\Adam\main.cpp(168,13): warning C4018:  '>': signed/unsigned mismatch
-C:\C++\Adam\main.cpp(483,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(544,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(683,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(1031,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(1073,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(1116,43): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(168,13): warning C4018:  '<': signed/unsigned mismatch
+C:\C++\Adam\main.cpp(170,13): warning C4018:  '>': signed/unsigned mismatch
+C:\C++\Adam\main.cpp(487,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(548,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(687,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(1035,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(1077,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(1120,43): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
   Adam.vcxproj -> C:\C++\Adam\Debug\Adam.exe
