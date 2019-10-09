@@ -36,17 +36,6 @@ public:
 	void setAlpha(Uint8 alpha)
 	{
 		SDL_SetTextureAlphaMod(mTexture, alpha);
-		if (alpha == 255) { beta = 1; }
-		else { beta = 0; }
-	}
-
-	void swapAlpha()
-	{
-		if (underneath != underneath_again)
-		{
-			if (beta) { setAlpha(127); }
-			else { setAlpha(255); }
-		}
 	}
 
 	void free()
@@ -99,12 +88,12 @@ public:
 class Text
 {
 public:
-	Text() // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!
+	Text(std::string path) // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!
 	{
 		spriteFree();
 
 		SDL_Texture* newTexture = NULL;
-		SDL_Surface* loadedSurface = IMG_Load("Sprites/text.png");
+		SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 
 		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
 
