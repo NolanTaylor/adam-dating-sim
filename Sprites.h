@@ -35,7 +35,10 @@ public:
 
 	void setAlpha(Uint8 alpha)
 	{
-		SDL_SetTextureAlphaMod(mTexture, alpha);
+		if (alpha > 255)
+			SDL_SetTextureAlphaMod(mTexture, 255);
+		else
+			SDL_SetTextureAlphaMod(mTexture, alpha);
 	}
 
 	void free()
@@ -124,7 +127,7 @@ public:
 		{
 			if (pos == 1)
 				play(text.size());
-			for (int i = 0; i < pos / 8; i++)
+			for (int i = 0; i < pos / 6; i++)
 			{
 				render(renderArea.x + (j * 8 * size), renderArea.y, &character[getLetter(text[i])], size);
 				if (text[i] == '/')
@@ -136,7 +139,7 @@ public:
 
 			pos++;
 
-			if (pos > text.size() * 8)
+			if (pos > text.size() * 6)
 			{
 				pos = 0;
 				text = "";
