@@ -1,33 +1,33 @@
 ﻿  main.cpp
-C:\C++\Adam\Sprites.h(57,35): warning C4838:  conversion from 'float' to 'int' requires a narrowing conversion
-C:\C++\Adam\Sprites.h(57,35): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(57,47): warning C4838:  conversion from 'float' to 'int' requires a narrowing conversion
-C:\C++\Adam\Sprites.h(57,47): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(61,27): warning C4244:  '=': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(62,27): warning C4244:  '=': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(71,35): warning C4838:  conversion from 'float' to 'int' requires a narrowing conversion
-C:\C++\Adam\Sprites.h(71,35): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(71,47): warning C4838:  conversion from 'float' to 'int' requires a narrowing conversion
-C:\C++\Adam\Sprites.h(71,47): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(75,27): warning C4244:  '=': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(76,27): warning C4244:  '=': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(132,25): warning C4244:  'argument': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(142,12): warning C4018:  '>': signed/unsigned mismatch
-C:\C++\Adam\Sprites.h(154,22): warning C4018:  '<': signed/unsigned mismatch
-C:\C++\Adam\Sprites.h(156,25): warning C4244:  'argument': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(181,35): warning C4838:  conversion from 'float' to 'int' requires a narrowing conversion
-C:\C++\Adam\Sprites.h(181,35): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(181,47): warning C4838:  conversion from 'float' to 'int' requires a narrowing conversion
-C:\C++\Adam\Sprites.h(181,47): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(185,27): warning C4244:  '=': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\Sprites.h(186,27): warning C4244:  '=': conversion from 'float' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(172,13): warning C4018:  '<': signed/unsigned mismatch
-C:\C++\Adam\main.cpp(174,13): warning C4018:  '>': signed/unsigned mismatch
-C:\C++\Adam\main.cpp(505,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(567,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(708,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(1062,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(1106,42): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(1151,43): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
-C:\C++\Adam\main.cpp(1194,43): warning C4244:  '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(57,35): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\C++\Adam\Sprites.h(57,35): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(57,47): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\C++\Adam\Sprites.h(57,47): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(61,27): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(62,27): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(71,35): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\C++\Adam\Sprites.h(71,35): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(71,47): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\C++\Adam\Sprites.h(71,47): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(75,27): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(76,27): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(132,25): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(142,12): warning C4018: '>': signed/unsigned mismatch
+C:\C++\Adam\Sprites.h(154,22): warning C4018: '<': signed/unsigned mismatch
+C:\C++\Adam\Sprites.h(156,25): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(181,35): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\C++\Adam\Sprites.h(181,35): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(181,47): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\C++\Adam\Sprites.h(181,47): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(185,27): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\Sprites.h(186,27): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(172,13): warning C4018: '<': signed/unsigned mismatch
+C:\C++\Adam\main.cpp(174,13): warning C4018: '>': signed/unsigned mismatch
+C:\C++\Adam\main.cpp(505,42): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(567,42): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(708,42): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(1062,42): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(1106,42): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(1151,43): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\C++\Adam\main.cpp(1194,43): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
   Adam.vcxproj -> C:\C++\Adam\Debug\Adam.exe
